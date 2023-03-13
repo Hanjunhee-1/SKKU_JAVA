@@ -1,0 +1,92 @@
+오늘 강의에서는 String Method 에 대해서 배웠다.
+
+대부분 들어봤거나 알고 있는 것이었지만 새로 배운것도 있었다.
+
+JAVA 에서는 String 자체가 constant 이기 때문에 수정하는 것이 불가능하다고 한다.
+하지만 내가 작성할 때는 String 이 수정되는 것처럼 보이는데 실제 내부에서는 다음과 같이 동작한다고 한다.
+
+예를 들어,
+```
+    String s = "abcdefg";
+```
+위와 같이 String 변수를 선언했을 때
+
+    (1) 메모리 상에 "abcdefg" 라는 것을 저장한다.
+    (2) s 는 "abcdefg" 가 저장된 곳의 주소를 가지게 된다.
+    (3) 만약 s = "abc"; 이런식으로 수정하려고 할 경우
+    (4) 메모리 상에 "abc" 라는 것을 새로 만들어 저장하고
+    (5) s 에 "abc" 의 주소를 할당한다.
+    (6) JAVA 에는 garbage collector 가 있다고 하는데 이것이 사용하지 않는 변수 같은 것들을 싹 지워준다고 한다.
+
+위와 같은 새로운 것을 배웠다.
+
+
+
+
+
+
+
+
+★  코드 설명
+    이번 과제는 JAVA 에는 없는 StringMethod 를 만들어보는 것이었다.
+    3가지의 함수를 만들면 됐다. addString(), reverse(), removeString() 이렇게 3가지다.
+
+    ```
+        public class StringMethod {
+
+            static String addString(String s1, int index, String s2) {
+                String firstString = new String();
+                String secondString = new String();
+                String resultString = new String();
+                
+                firstString = s1.substring(0, index+1);
+                secondString = s1.substring(index+1);
+                resultString = firstString + s2 + secondString;
+
+                return resultString;
+            }
+
+            static String reverse(String s) {
+                String resultString = new String();
+
+                for (int i=s.length()-1; i>=0; i--) {
+                    resultString += s.charAt(i);
+                }
+                
+                return resultString;
+            }
+
+            static String removeString(String s1, String s2) {
+                String resultString = new String();
+                int index = s1.indexOf(s2);
+
+                while (index != -1) {
+                    s1 = s1.substring(0, index) + s1.substring(index + s2.length());
+                    index = s1.indexOf(s2);
+                }
+                resultString = s1;
+                return resultString;
+            }
+
+            public static void main(String args[]) {
+                System.out.println(addString("0123456", 3, "-"));
+                System.out.println(reverse("abc"));
+                System.out.println(removeString("01001000", "00"));
+            }
+        }
+    ```
+    
+    addString() 과 reverse() 는 그렇게 어렵지 않았는데 removeString() 은 좀 생각이 필요했던 것 같다.
+    removeString() 은 s1 문자열에서 s2 문자열이 존재하지 않도록 싹 지우는 것이다. 예를 들면 "01001000" 에서 "00" 을 지우면
+    "0110" 이 나온다. 이미 JAVA 내장 함수에 똑같은 기능을 하는 replaceAll() 이라는 함수가 있어서 사용하려 했지만 안된다고 했다...
+
+    그래도 생각을 좀 했더니 어렵지 않게 풀 수 있었다.
+    일단 indexOf() 라는 함수를 활용했다. String 에서 해당 변수가 존재하는 위치를 반환해주는 것인데
+    존재한다면 해당 변수의 시작 index 를 반환하고 없다면 -1 을 반환한다. 
+    이를 활용하여 무한 반복문으로 지워주었다.
+
+    일단 index 를 구한다. 0 부터 해당 index 까지 substring() 으로 잘라준다.
+    그 다음 index 의 위치에서 없애주려는 변수의 길이만큼 더하여 substring() 으로 잘라준다.
+    위의 과정을 통해 생긴 문자열을 붙여서 다시 저장한다.
+
+    이렇게 해서 이번 주 과제도 해낼 수 있었다.
