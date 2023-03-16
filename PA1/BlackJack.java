@@ -575,12 +575,11 @@ class House extends Hand {
 		
 		// 첫 카드는 무조건 HIDDEN.
 		String result = new String("House: HIDDEN, ");
-		int i = 0;
 
 		// 두 번째 카드는 보여줌
 		result += this.convert(
 				this.myDeck.get(1).theValue, 
-				this.myDeck.get(i).theSuit, 
+				this.myDeck.get(1).theSuit, 
 				false, 
 				0	// 아무 값이나 상관없음.
 			);
