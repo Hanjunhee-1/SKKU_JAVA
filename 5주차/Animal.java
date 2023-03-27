@@ -27,9 +27,9 @@ public class Animal {
 
 abstract class Mammal extends Animal {
 	
-	void bark() {}
+	abstract void bark();
 	
-	void getFood() {}
+	abstract void getFood();
 }
 
 
@@ -130,7 +130,7 @@ final class Dog extends Mammal {
 
 abstract class Reptile extends Animal {
 	
-	void getFood() {}
+	abstract void getFood();
 }
 
 final class Crocodile extends Reptile {
