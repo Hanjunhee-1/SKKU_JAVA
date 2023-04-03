@@ -6,9 +6,18 @@ public class Contact {
 		
 	// show all contents
 	void show() {
-		for (String key : contact.keySet()) {
-			System.out.println(key + " " + contact.get(key));
-		}
+		
+		// HashMap 에서는 정렬을 지원하지 않음.
+		List<Map.Entry<String, String>> list = new ArrayList<>(contact.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
+            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+
+        for (Map.Entry<String, String> entry : list) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
 	}
 	
 	// find phoneNumber
