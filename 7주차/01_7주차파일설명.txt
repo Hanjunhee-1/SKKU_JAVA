@@ -1,0 +1,40 @@
+이번에는 File I/O 에 대해서 배웠다.
+어떤 언어를 배우든 File 입출력은 꼭 배우는 것 같다.
+
+java.io 라는 패키지에 관련 모듈들이 잔뜩 있는데 그 중에서도 FileInputStream, FileOutputStream 을 다뤘다.
+
+FileInputStream 은 어떠한 file 로부터 값을 읽어오고 싶을 때 사용한다.
+
+```
+    FileInputStream fis = new FileInputStream("[파일 경로]");
+```
+위와 같은 형식으로 사용한다. 
+
+이렇게 해서 file 안의 존재하는 값을 읽어올 수는 있는데 char 하나씩 밖에 못읽어온다. 
+만약 line 별로 읽어오고 싶은 경우에는 InputStreamReader 와 BufferedReader 를 추가로 사용하면 된다.
+
+```
+    InputStreamReader isr = new InputStreamReader(fis);
+    BufferedReader br = new BufferedReader(isr);
+```
+위와 같이 코드를 작성하면 br 객체를 통해 file 의 내용을 line 별로 읽어올 수도 있다.
+
+
+
+반대로 file 에 어떤 데이터를 작성하고 싶은 경우라면 FileOutputStream 을 사용한다.
+```
+    FileOutputStream fos = new FileOutputStream("[파일 경로]");
+```
+위와 같은 형식으로 사용하는데 이미 있는 파일 뿐만 아니라 없는 파일임에도 생성은 해줄수 있다.
+
+데이터를 작성할 때는 보통 String 으로 쭉 작성하는 경우가 많으므로 그냥 OutputStreamWriter, BufferedWriter 를 사용하면 편하다.
+```
+    OutputStreamWriter osw = new OutputStreamWriter(fos);
+    BufferedWriter bw = new BufferedWriter(osw);
+```
+이제 bw 객체를 통해 file 안에 원하는 데이터를 작성해줄 수 있다.
+
+
+
+이번 실습과제는 input.txt 에 있는 데이터를 읽어서 output.txt 에 반대로 작성해주는 것이었다.
+코드 자체가 그리 어렵지 않고 File I/O 를 제대로 알고 있는지 개념을 물어보는 문제였기 때문에 간단하게 풀 수 있었다.
