@@ -1,0 +1,50 @@
+이번 강의에서는 Exception 에 대해 배웠다. 
+
+Exception 은 Checked Exception 과 Unchecked Exception 으로 나뉜다.
+
+(1) Checked Exception
+    해당 Exception 은 컴파일 시점에서 확인되며 해당 예외가 발생할 가능성이 있는 경우에는 무조건 예외처리 코드를 사용해야 한다.
+
+(2) Unchecked Exception
+    해당 Exception 은 실행 시점에서 확인되며 예외처리를 해주지 않아도 컴파일이 가능하다. 대신, 해당 예외가 발생한다면 프로그램이 그냥 중단되어 버린다. 
+
+
+뿐만 아니라 사용자 정의 Exception 을 만들수도 있다. 예시는 아래와 같다.
+```
+    class MyException extends Exception {
+        public MyException(String message) {
+            super(message);
+        }
+    }
+
+    또는
+
+    class MyException extends RuntimeException {
+        public MyException(String message) {
+            super(message);
+        }
+    }
+```
+예시가 두가지가 있는데 위에것은 Checked Exception 의 형태이고 아래 것은 Unchecked Exception 의 형태이다.
+
+사용방법은 다음과 같다.
+(1) Checked Exception 사용하기
+    ```
+        try {
+            throw MyException("Checked Exception");
+        } catch (MyException e) {
+            System.out.println(e.getMessage());
+        }
+    ```
+    해당 방식은 반드시 try-catch 문을 사용해주어야 한다.
+
+(2) Unchecked Exception 사용하기
+    ```
+        throw MyException("Unchecked Exception");
+    ```
+    Unchecked Exception 의 경우 try-catch 문을 굳이 사용하지 않아도 예외가 발생하면 프로그램이 알아서 멈추기 때문에 상관없다.
+
+
+
+
+위의 개념들을 확실히 이해했다면 실습코드는 어려운게 없으니 천천히 보면 될것 같다.
