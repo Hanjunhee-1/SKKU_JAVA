@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
@@ -40,6 +39,9 @@ public class Battleship {
 
 	// 나중에 점수 계산할 때 사용할 변수
 	static ArrayList<Ship> shipScore = new ArrayList<Ship>();
+	
+	// memoization 에 사용
+	static int[][] memo = new int[10][10];
 	
 	public static void main(String[] args) throws BombInputException, ModeInputException, HitException {
 		
@@ -230,11 +232,14 @@ public class Battleship {
 				Random random = new Random();
 				
 				// 배를 배치하는 방향을 어느 방향으로 할지 정할 때 사용.
-				String[] direction = {"U", "D", "R", "L"};
+				String[] direction = {"U", "R", "D", "L"};
 				
-				// ships 의 요소들의 순서를 한번 섞어줌.
-				Collections.shuffle(ships);
 				
+				for (int i=0; i<10; i++) {
+					for (int j=0; j<10; j++) {
+						memo[i][j] = 0;
+					}
+				}
 				
 				// 모든 배에 대해서 gameBoard 에 배치적용.
 				for (int i=0; i<ships.size(); i++) {
@@ -242,23 +247,31 @@ public class Battleship {
 					// 배치되었는지 확인하기 위한 플래그
 					boolean isLocated = false;
 					
-					// direction 의 요소들의 순서를 한번 섞어줌.
-					Collections.shuffle(Arrays.asList(direction));
+					int _x = random.nextInt(10);
+					int _y = random.nextInt(10);
+					
+					while (memo[_x][_y] == 1) {
+						_x = random.nextInt(10);
+						_y = random.nextInt(10);
+					}
+					
 					
 					for (int j=0; j<direction.length; j++) {
-						// x 와 y 에 대해 각각 0부터 9까지의 랜덤한 숫자 적용.
-						x = random.nextInt(10);
-						y = random.nextInt(10);
 						
-						boolean check = checkLocation(x, y, direction[j], ships.get(i).size);
+//						System.out.print(_x);
+//						System.out.print(" ");
+//						System.out.println(_y);
+						
+						boolean check = checkLocation(_x, _y, direction[j], ships.get(i).size);
 
 						if (check) {
 							if (direction[j].equals("U")) {
 								
 								int row = 0;
-								int maxIndex = x - ships.get(i).size+1;
-								for (row = x; row >= maxIndex; row--) {
-									gameBoard[row][y] = ships.get(i).type;
+								int maxIndex = _x - ships.get(i).size+1;
+								for (row = _x; row >= maxIndex; row--) {
+									gameBoard[row][_y] = ships.get(i).type;
+									fillMemoCross(row, _y);
 								}
 
 								isLocated = true;
@@ -266,9 +279,10 @@ public class Battleship {
 							} else if (direction[j].equals("D")) {
 								
 								int row = 0;
-								int maxIndex = x + ships.get(i).size - 1;
-								for (row = x; row <= maxIndex; row++) {
-									gameBoard[row][y] = ships.get(i).type;
+								int maxIndex = _x + ships.get(i).size - 1;
+								for (row = _x; row <= maxIndex; row++) {
+									gameBoard[row][_y] = ships.get(i).type;
+									fillMemoCross(row, _y);
 								}
 
 								isLocated = true;
@@ -276,23 +290,25 @@ public class Battleship {
 							} else if (direction[j].equals("R")) {
 								
 								int col = 0;
-								int maxIndex = y + ships.get(i).size - 1;
-								for (col = y; col <= maxIndex; col++) {
-									gameBoard[x][col] = ships.get(i).type;
+								int maxIndex = _y + ships.get(i).size - 1;
+								for (col = _y; col <= maxIndex; col++) {
+									gameBoard[_x][col] = ships.get(i).type;
+									fillMemoCross(_x, col);
 								}
 
 								isLocated = true;
 							} else if (direction[j].equals("L")) {
 								
 								int col = 0;
-								int maxIndex = y - ships.get(i).size + 1;
-								for (col = y; col >= maxIndex; col--) {
-									gameBoard[x][col] = ships.get(i).type;
+								int maxIndex = _y - ships.get(i).size + 1;
+								for (col = _y; col >= maxIndex; col--) {
+									gameBoard[_x][col] = ships.get(i).type;
+									fillMemoCross(_x, col);
 								}
 
 								isLocated = true;
 							}
-						} 
+						}
 
 						if (isLocated) {
 							break;
@@ -435,6 +451,50 @@ public class Battleship {
 			return "Try again";
 		} else {
 			return "Hit";
+		}
+	}
+	
+	static void fillMemoCross(int x, int y) {
+		memo[x][y] = 1;
+		if (x == 0) {
+			if (y == 0) {
+				memo[x+1][y] = 1;
+				memo[x][y+1] = 1;
+			} else if (y == 9) {
+				memo[x+1][y] = 1;
+				memo[x][y-1] = 1;
+			} else {
+				memo[x][y-1] = 1;
+				memo[x][y+1] = 1;
+				memo[x+1][y] = 1;
+			}
+		} else if (x == 9) {
+			if (y == 0) {
+				memo[x-1][y] = 1;
+				memo[x][y+1] = 1;
+			} else if (y == 9) {
+				memo[x-1][y] = 1;
+				memo[x][y-1] = 1;
+			} else {
+				memo[x][y-1] = 1;
+				memo[x][y+1] = 1;
+				memo[x-1][y] = 1;
+			}
+		} else {
+			if (y == 0) {
+				memo[x][y+1] = 1;
+				memo[x-1][y] = 1;
+				memo[x+1][y] = 1;
+			} else if (y == 9) {
+				memo[x][y-1] = 1;
+				memo[x-1][y] = 1;
+				memo[x+1][y] = 1;
+			} else {
+				memo[x][y-1] = 1;
+				memo[x][y+1] = 1;
+				memo[x-1][y] = 1;
+				memo[x+1][y] = 1;
+			}
 		}
 	}
 	
